@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.4</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>pl.locon.some-cool-service</groupId>
+    <artifactId>some-cool-service-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <description/>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <dockerized.module>some-cool-service</dockerized.module>
+
+        <locon-core-lib-version>RELEASE</locon-core-lib-version>
+        <pl.locon.sso-starter>RELEASE</pl.locon.sso-starter>
+        <pl.locon.config-starter>RELEASE</pl.locon.config-starter>
+        <pl.locon.web-starter>RELEASE</pl.locon.web-starter>
+    </properties>
+
+    <modules>
+    <module>some-cool-service-api</module>
+    <module>some-cool-service</module>
+  </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>pl.locon.core</groupId>
+                <artifactId>sul-core-lib</artifactId>
+                <version>${locon-core-lib-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>pl.locon.core</groupId>
+                <artifactId>br-core-lib</artifactId>
+                <version>${locon-core-lib-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>pl.locon.spring-boot-starter</groupId>
+                <artifactId>sso-security-spring-boot-starter</artifactId>
+                <version>${pl.locon.sso-starter}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>pl.locon.spring-boot-starter</groupId>
+                <artifactId>config-client-spring-boot-starter</artifactId>
+                <version>${pl.locon.config-starter}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>pl.locon.spring-boot-starter</groupId>
+                <artifactId>web-spring-boot-starter</artifactId>
+                <version>${pl.locon.web-starter}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <distributionManagement>
+        <repository>
+            <id>${repository.id}</id>
+            <name>${repository.name}</name>
+            <url>${repository.url}</url>
+        </repository>
+        <snapshotRepository>
+            <id>${repository.snapshot.id}</id>
+            <name>${repository.snapshot.name}</name>
+            <url>${repository.snapshot.url}</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>

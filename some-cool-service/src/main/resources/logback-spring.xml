@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <conversionRule conversionWord="wEx"
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] [%X{Authorization}] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+    <property name="LOG_FILE" value="logs/application.log"/>
+
+    <springProfile name="prod">
+        <appender name="STACKDRIVER" class="ch.qos.logback.core.ConsoleAppender">
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>TRACE</level>
+            </filter>
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+
+                    <timestamp/>
+
+                    <logLevel>
+                        <fieldName>severity</fieldName>
+                    </logLevel>
+
+                    <threadName>
+                        <fieldName>thread</fieldName>
+                    </threadName>
+
+                    <callerData>
+                        <classFieldName>class</classFieldName>
+                        <methodFieldName>method</methodFieldName>
+                        <lineFieldName>line</lineFieldName>
+                    </callerData>
+                    <mdc/>
+
+                    <arguments>
+                        <includeNonStructuredArguments>false</includeNonStructuredArguments>
+                    </arguments>
+
+                    <stackTrace>
+                        <fieldName>stack</fieldName>
+                    </stackTrace>
+                    <message/>
+                </providers>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="STACKDRIVER"/>
+        </root>
+
+    </springProfile>
+    <springProfile name="default | devel">
+
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>TRACE</level>
+            </filter>
+            <encoder>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            </encoder>
+        </appender>
+
+        <appender name="FILE_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>INFO</level>
+            </filter>
+            <encoder>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            </encoder>
+            <file>${LOG_FILE}</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_FILE}-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+                <maxFileSize>500MB</maxFileSize>
+                <maxHistory>365</maxHistory>
+                <totalSizeCap>5GB</totalSizeCap>
+            </rollingPolicy>
+        </appender>
+        <appender name="FILE_DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>DEBUG</level>
+            </filter>
+
+            <encoder>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            </encoder>
+            <file>${LOG_FILE}</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_FILE}-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+                <maxFileSize>200MB</maxFileSize>
+                <maxHistory>180</maxHistory>
+                <totalSizeCap>10GB</totalSizeCap>
+            </rollingPolicy>
+        </appender>
+        <appender name="FILE_TRACE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>TRACE</level>
+            </filter>
+            <encoder>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            </encoder>
+            <file>${LOG_FILE}</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_FILE}-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+                <maxFileSize>500MB</maxFileSize>
+                <maxHistory>180</maxHistory>
+                <totalSizeCap>10GB</totalSizeCap>
+            </rollingPolicy>
+        </appender>
+
+        <logger name="pl.locon" level="TRACE" additivity="false">
+            <appender-ref ref="FILE_TRACE" />
+            <appender-ref ref="CONSOLE" />
+        </logger>
+
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="FILE_TRACE" />
+        </root>
+    </springProfile>
+
+</configuration>

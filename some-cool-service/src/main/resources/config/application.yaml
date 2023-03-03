@@ -1,0 +1,72 @@
+application:
+  build:
+    version: @project.version@
+server:
+  port: 8080
+spring:
+  application:
+    name: some-cool-service
+  data:
+    jpa:
+      repositories:
+        enabled: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/DB_NAME
+    username: some_cool_service
+    password: ok
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+  jackson:
+    default-property-inclusion: non_null
+  sleuth:
+    enabled: false
+  cloud:
+    config:
+      label: ${spring.application.name}-${application.build.version}
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    prometheus:
+      enabled: true
+    refresh:
+      enabled: true
+
+logging:
+  level:
+    pl.locon: DEBUG
+  file:
+    path: /logs
+
+starter:
+  web:
+    exception-handler:
+      v2:
+        enable: true
+  security:
+    enable: true
+    internal:
+      jwt:
+        secret: secret
+        ant-matchers:
+          - /internal/**
+    no-auth:
+      ant-matchers:
+        - /v3/api-docs/**
+        - /swagger-ui/**
+        - /swagger-ui.html
+        - /actuator/**
+  validation:
+    enable: true
